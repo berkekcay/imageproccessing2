@@ -14,7 +14,7 @@ def analyze_image(image_url):
         'api_user': API_USER,
         'api_secret': API_SECRET
     }
-    r = requests.get('https://api.sightengine.com/1.0/check.json', params=params)
+    r = requests.get('https://api.sightengine.com/1.0/check.json', params=params, verify=False)
     return json.loads(r.text)
 
 def main():
