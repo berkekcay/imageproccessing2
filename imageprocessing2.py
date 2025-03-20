@@ -88,14 +88,17 @@ def main():
         col1.metric(label="🌟 Parlaklık", value=f"{brightness:.2f}" if brightness else "-")
         col2.metric(label="🔍 Netlik", value=f"{sharpness:.2f}" if sharpness else "-")
 
-        # Renk Kompozisyonu (Güvenli hale getirildi)
+        # Renk Kompozisyonu (Tamamen güvenli hale getirildi)
         colors = results.get("colors", {}).get("dominant", [])
-        if colors:
+        if colors and isinstance(colors, list):
             st.subheader("🎨 Renk Dağılımı")
             for color in colors:
-                hex_value = color.get("hex", "Bilinmiyor")
-                percent = color.get("percent", 0)
-                st.write(f"🟢 **Renk:** {hex_value} - **Yoğunluk:** {percent:.2f}%")
+                if isinstance(color, dict):
+                    hex_value = color.get("hex", "Bilinmiyor")
+                    percent = color.get("percent", 0)
+                    st.write(f"🟢 **Renk:** {hex_value} - **Yoğunluk:** {percent:.2f}%")
+                else:
+                    st.warning("📢 Renk verisi beklenmeyen formatta geldi.")
         else:
             st.warning("📢 Renk analizi yapılamadı. API'den uygun veri alınamadı.")
 
