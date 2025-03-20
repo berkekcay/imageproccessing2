@@ -1,5 +1,4 @@
 import streamlit as st
-import time
 
 def main():
     st.set_page_config(page_title="AI Destekli Sosyal Medya Optimizasyonu", layout="wide")
@@ -66,8 +65,7 @@ def main():
         uploaded_image = st.file_uploader("📤 Bir görsel yükleyin", type=["jpg", "png", "jpeg"])
         if uploaded_image:
             st.image(uploaded_image, caption="Yüklenen Görsel", use_container_width=True)
-            with st.spinner("Görsel işleniyor..."):
-                time.sleep(2)  # Simüle edilmiş işlem süresi
+            st.info("Görsel işleniyor...")  # Simüle edilmiş işlem süresi
             st.success("✅ Analiz tamamlandı!")
         else:
             st.info("Henüz bir görsel yüklenmedi.")
