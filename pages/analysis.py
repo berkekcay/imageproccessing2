@@ -35,7 +35,7 @@ def analysis_page():
     # Ana sayfaya dönüş butonu
     if st.button("🏠 Ana Sayfaya Dön"):
         st.session_state.analyzed = False
-        st.switch_page("main")
+        st.experimental_rerun()
     
 if __name__ == "__main__":
     analysis_page()
