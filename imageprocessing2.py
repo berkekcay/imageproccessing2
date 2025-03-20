@@ -1,7 +1,8 @@
 import streamlit as st
+import random
 
 def main():
-    st.set_page_config(page_title="AI Destekli Sosyal Medya Optimizasyonu", layout="wide")
+    st.set_page_config(page_title="📊 AI Destekli Sosyal Medya Optimizasyonu", layout="wide")
     
     # Özel CSS ile renkleri ayarlıyoruz
     st.markdown("""
@@ -52,11 +53,11 @@ def main():
     """, unsafe_allow_html=True)
     
     # Kenar Çubuğu (Sidebar)
-    st.sidebar.title("🔧 Ayarlar")
-    mode = st.sidebar.radio("Mod Seçin:", ["Ana Sayfa", "İçerik Analizi", "İstatistikler", "Ayarlar"])
+    st.sidebar.title("🔧 Dashboard Ayarları")
+    mode = st.sidebar.radio("📌 Mod Seçin:", ["Ana Sayfa", "İçerik Analizi", "İstatistikler", "Etkileşim Simülasyonu", "Ayarlar"])
     
     if mode == "Ana Sayfa":
-        st.title("📸 AI Destekli Sosyal Medya İçerik Optimizasyonu")
+        st.title("📸 AI Destekli Sosyal Medya Optimizasyonu")
         st.subheader("AI destekli analiz ile sosyal medya görsellerinizi optimize edin ve daha fazla etkileşim alın!")
         st.image("https://via.placeholder.com/800x400", caption="Örnek Görsel", use_container_width=True)
     
@@ -65,8 +66,11 @@ def main():
         uploaded_image = st.file_uploader("📤 Bir görsel yükleyin", type=["jpg", "png", "jpeg"])
         if uploaded_image:
             st.image(uploaded_image, caption="Yüklenen Görsel", use_container_width=True)
-            st.info("Görsel işleniyor...")  # Simüle edilmiş işlem süresi
-            st.success("✅ Analiz tamamlandı!")
+            st.success("✅ Analiz tamamlandı! AI önerileri oluşturuldu.")
+            st.write("**Öneriler:**")
+            st.write("✔ Daha yüksek kontrast kullanın")
+            st.write("✔ Hashtagleri optimize edin")
+            st.write("✔ Yüzey parlaklığını artırın")
         else:
             st.info("Henüz bir görsel yüklenmedi.")
     
@@ -74,11 +78,22 @@ def main():
         st.title("📈 İstatistikler")
         col1, col2, col3 = st.columns(3)
         with col1:
-            st.metric(label="🌟 Ortalama Beğeni", value="1.2K", delta="+15%")
+            st.metric(label="🌟 Ortalama Beğeni", value=f"{random.randint(800, 1500)}", delta="+15%")
         with col2:
-            st.metric(label="📢 Etkileşim Oranı", value="8.7%", delta="+2.3%")
+            st.metric(label="📢 Etkileşim Oranı", value=f"{random.uniform(5, 12):.2f}%", delta="+2.3%")
         with col3:
-            st.metric(label="📊 Paylaşım Sayısı", value="350", delta="+10")
+            st.metric(label="📊 Paylaşım Sayısı", value=f"{random.randint(200, 500)}", delta="+10")
+    
+    elif mode == "Etkileşim Simülasyonu":
+        st.title("🔮 AI Tabanlı Etkileşim Simülasyonu")
+        st.write("**Bu mod, belirli parametrelere göre içeriğinizin sosyal medyada nasıl performans gösterebileceğini tahmin eder.**")
+        engagement = random.randint(500, 2000)
+        st.progress(engagement / 2000)
+        st.write(f"Tahmini Etkileşim: {engagement} beğeni / yorum")
+        if engagement > 1500:
+            st.success("İçeriğiniz yüksek etkileşim alabilir! 🎉")
+        else:
+            st.warning("İçeriğinizde bazı iyileştirmeler yapabilirsiniz. 💡")
     
     elif mode == "Ayarlar":
         st.title("⚙ Ayarlar")
