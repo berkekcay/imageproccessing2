@@ -5,17 +5,19 @@ import json
 # Sightengine API Bilgileri
 API_USER = "844129611"
 API_SECRET = "muoN6nmb9nGzdxEPanBSSE62o8H4N7FH"
+API_URL = "https://api.sightengine.com/1.0/check.json"
 
-def analyze_image(image_url):
-    """Sightengine API'yi kullanarak görseli analiz eder."""
+def analyze_image(image_path):
+    """Sightengine API'yi kullanarak doğrudan yüklenen bir görseli analiz eder."""
     params = {
-        'url': image_url,
         'models': 'properties,quality,faces',
         'api_user': API_USER,
         'api_secret': API_SECRET
     }
-    r = requests.get('https://api.sightengine.com/1.0/check.json', params=params, verify=False)
-    return json.loads(r.text)
+    with open(image_path, 'rb') as img_file:
+        files = {'media': img_file}
+        response = requests.post(API_URL, files=files, data=params)
+    return json.loads(response.text)
 
 def main():
     st.set_page_config(page_title="AI Destekli Sosyal Medya Optimizasyonu", layout="wide")
@@ -58,53 +60,54 @@ def main():
     st.subheader("AI destekli analiz ile sosyal medya görsellerinizi optimize edin ve daha fazla etkileşim alın!")
 
     # Görsel yükleme alanı
-    st.markdown("<h3 style='text-align: center;'>📤 Bir Görsel Yükleyin</h3>", unsafe_allow_html=True)
-    uploaded_image = st.file_uploader("📤 Bir görsel yükleyin", type=["jpg", "png", "jpeg"])  # Kullanıcıdan görsel URL al
+    uploaded_image = st.file_uploader("📤 Bir görsel yükleyin", type=["jpg", "png", "jpeg"])
 
-    if st.button("🔍 Analiz Başlat"):
-        if uploaded_image:
-            with st.spinner("Görsel analiz ediliyor..."):
-                results = analyze_image(uploaded_image)
+    if uploaded_image and st.button("🔍 Analiz Başlat"):
+        with st.spinner("Görsel analiz ediliyor..."):
+            # Dosyayı geçici bir konuma kaydetme
+            temp_image_path = f"./temp_image.jpg"
+            with open(temp_image_path, "wb") as f:
+                f.write(uploaded_image.getbuffer())
 
-            # Görseli göster
-            st.image(uploaded_image, caption="Analiz Edilen Görsel", use_container_width=True)
-            st.success("✅ Analiz Tamamlandı!")
+            # API'ye yükleyip analiz yapma
+            results = analyze_image(temp_image_path)
 
-            # Analiz Sonuçları
-            st.markdown("---")
-            st.subheader("📊 Analiz Sonuçları")
+        # Görseli göster
+        st.image(uploaded_image, caption="Analiz Edilen Görsel", use_container_width=True)
+        st.success("✅ Analiz Tamamlandı!")
 
-            # Parlaklık ve Netlik
-            if "quality" in results:
-                brightness = results["quality"].get("brightness", "Bilinmiyor")
-                sharpness = results["quality"].get("sharpness", "Bilinmiyor")
+        # Analiz Sonuçları
+        st.markdown("---")
+        st.subheader("📊 Analiz Sonuçları")
 
-                col1, col2 = st.columns(2)
-                col1.metric(label="🌟 Parlaklık", value=f"{brightness:.2f}")
-                col2.metric(label="🔍 Netlik", value=f"{sharpness:.2f}")
+        # Parlaklık ve Netlik
+        if "quality" in results:
+            brightness = results["quality"].get("brightness", "Bilinmiyor")
+            sharpness = results["quality"].get("sharpness", "Bilinmiyor")
 
-            # Renk Kompozisyonu
-            if "colors" in results:
-                st.subheader("🎨 Renk Dağılımı")
-                for color in results["colors"]["dominant"]:
-                    st.write(f"🟢 **Renk:** {color['hex']} - **Yoğunluk:** {color['percent']:.2f}%")
+            col1, col2 = st.columns(2)
+            col1.metric(label="🌟 Parlaklık", value=f"{brightness:.2f}" if brightness != "Bilinmiyor" else "-")
+            col2.metric(label="🔍 Netlik", value=f"{sharpness:.2f}" if sharpness != "Bilinmiyor" else "-")
 
-            # Yüz Tespiti
-            if "faces" in results and results["faces"]["count"] > 0:
-                st.subheader("🙂 Yüz Algılama")
-                st.write(f"👥 Görselde **{results['faces']['count']}** yüz algılandı.")
+        # Renk Kompozisyonu
+        if "colors" in results:
+            st.subheader("🎨 Renk Dağılımı")
+            for color in results["colors"]["dominant"]:
+                st.write(f"🟢 **Renk:** {color['hex']} - **Yoğunluk:** {color['percent']:.2f}%")
 
-            # Optimizasyon Önerileri
-            st.markdown("---")
-            st.subheader("💡 Optimizasyon Önerileri")
+        # Yüz Tespiti
+        if "faces" in results and results["faces"]["count"] > 0:
+            st.subheader("🙂 Yüz Algılama")
+            st.write(f"👥 Görselde **{results['faces']['count']}** yüz algılandı.")
 
-            if brightness < 30:
-                st.warning("📢 Parlaklık düşük! Görseli biraz daha aydınlatabilirsiniz.")
-            if sharpness < 30:
-                st.warning("📢 Görselin netliği düşük! Daha yüksek çözünürlüklü bir görsel kullanabilirsiniz.")
+        # Optimizasyon Önerileri
+        st.markdown("---")
+        st.subheader("💡 Optimizasyon Önerileri")
 
-        else:
-            st.error("Lütfen geçerli bir görsel URL'si girin.")
+        if isinstance(brightness, (int, float)) and brightness < 30:
+            st.warning("📢 Parlaklık düşük! Görseli biraz daha aydınlatabilirsiniz.")
+        if isinstance(sharpness, (int, float)) and sharpness < 30:
+            st.warning("📢 Görselin netliği düşük! Daha yüksek çözünürlüklü bir görsel kullanabilirsiniz.")
 
 if __name__ == "__main__":
     main()
