@@ -53,7 +53,7 @@ def main():
     
     if analyze_button and uploaded_image:
         st.session_state.analyzed = True
-        st.switch_page("analysis")  # Analiz sonuçlarını ayrı bir sayfada gösterme
+        st.switch_page("pages/analysis")  # Analiz sonuçlarını ayrı bir sayfada gösterme
     
     if uploaded_image:
         st.image(uploaded_image, caption="Yüklenen Görsel", use_container_width=True)
