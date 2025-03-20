@@ -53,7 +53,10 @@ def main():
     
     if analyze_button and uploaded_image:
         st.session_state.analyzed = True
-        st.switch_page("pages/analysis")  # Analiz sonuçlarını ayrı bir sayfada gösterme
+        st.experimental_rerun()
+    
+    if st.session_state.analyzed:
+        st.page_link("pages/analysis.py", label="📊 Analiz Sonuçlarına Git")
     
     if uploaded_image:
         st.image(uploaded_image, caption="Yüklenen Görsel", use_container_width=True)
