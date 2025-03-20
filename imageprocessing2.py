@@ -67,7 +67,7 @@ def main():
                 results = analyze_image(uploaded_image)
 
             # Görseli göster
-            st.image(uploaded_image, caption="Analiz Edilen Görsel", use_column_width=True)
+            st.image(uploaded_image, caption="Analiz Edilen Görsel", use_container_width=True)
             st.success("✅ Analiz Tamamlandı!")
 
             # Analiz Sonuçları
