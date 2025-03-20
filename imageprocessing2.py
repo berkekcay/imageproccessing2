@@ -59,7 +59,7 @@ def main():
 
     # Görsel yükleme alanı
     st.markdown("<h3 style='text-align: center;'>📤 Bir Görsel Yükleyin</h3>", unsafe_allow_html=True)
-    uploaded_image = st.text_input("Görsel URL'sini Girin")  # Kullanıcıdan görsel URL al
+    uploaded_image = st.file_uploader("📤 Bir görsel yükleyin", type=["jpg", "png", "jpeg"])  # Kullanıcıdan görsel URL al
 
     if st.button("🔍 Analiz Başlat"):
         if uploaded_image:
